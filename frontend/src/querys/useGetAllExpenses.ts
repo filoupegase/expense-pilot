@@ -1,20 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { queryOptions } from "@tanstack/react-query";
 import { api } from "@/lib/api.ts";
 import { minutesToMilliseconds } from "@/helpers/times.ts";
 
 export const queryParams = {
-  getQueryKey: () => ["total-spent"],
+  getQueryKey: () => ["get-all-expenses"],
   enabled: true,
 } as const;
 
-function groupOptions() {
-  return queryOptions({
+export const useGetAllExpenses = () => {
+  return useQuery({
     queryKey: [...queryParams.getQueryKey()],
     queryFn: async () => {
-      const res = await api.expenses["total-spent"].$get();
+      const res = await api.expenses.$get();
       if (!res.ok) {
-        throw new Error("Failed to fetch total spent");
+        throw new Error("server error");
       }
 
       return await res.json();
@@ -22,8 +21,4 @@ function groupOptions() {
     enabled: queryParams.enabled,
     staleTime: minutesToMilliseconds(5) // Cache for 5 minutes
   });
-}
-
-export const useGetExpenseTotalSpent = () => {
-  return useQuery(groupOptions());
 };
