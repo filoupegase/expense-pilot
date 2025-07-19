@@ -8,7 +8,7 @@ export const queryParams = {
   enabled: true,
 } as const;
 
-function groupOptions() {
+function getExpenseTotalSpentGroupedOptions() {
   return queryOptions({
     queryKey: [...queryParams.getQueryKey()],
     queryFn: async () => {
@@ -20,10 +20,10 @@ function groupOptions() {
       return await res.json();
     },
     enabled: queryParams.enabled,
-    staleTime: minutesToMilliseconds(5) // Cache for 5 minutes
+    staleTime: minutesToMilliseconds(10) // Cache for 10 minutes
   });
 }
 
 export const useGetExpenseTotalSpent = () => {
-  return useQuery(groupOptions());
+  return useQuery(getExpenseTotalSpentGroupedOptions());
 };

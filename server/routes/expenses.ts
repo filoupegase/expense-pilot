@@ -1,28 +1,12 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+import { createExpenseSchema, type Expense } from "../sharedTypes.ts";
 
-const ExpenseSchema = z.object({
-  id: z.number().int().positive().min(1),
-  title: z.string().min(3).max(100),
-  amount: z.number().int().positive(),
-});
-
-type Expense = z.infer<typeof ExpenseSchema>
-
-const createExpenseSchema = ExpenseSchema.omit({ id: true });
-
-const makeFakeExpenses = (id: number, title: string, amount: number): Expense => ({
+const createExpense = (id: number, title: string, amount: string): Expense => ({
   id,
   title,
   amount,
 });
-
-const fakeExpenses: Expense[] = [
-  makeFakeExpenses(1, "Groceries", 50),
-  makeFakeExpenses(2, "Utilities", 100),
-  makeFakeExpenses(3, "Rent", 1200),
-];
 
 export const expensesRoutes = new Hono()
   .get("/", (c) => {
@@ -59,7 +43,13 @@ export const expensesRoutes = new Hono()
     return c.json({ expense: deletedExpense });
   })
   .get("/total-spent", (c) => {
-    const total = fakeExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const total = fakeExpenses.reduce((sum, expense) => sum + expense.amount, "0");
 
     return c.json({ total });
   });
+
+const fakeExpenses: Expense[] = [
+  createExpense(1, "Groceries", "50"),
+  createExpense(2, "Utilities", "100"),
+  createExpense(3, "Rent", "1200"),
+];
