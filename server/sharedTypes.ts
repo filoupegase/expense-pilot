@@ -10,4 +10,10 @@ const ExpenseSchema = z.object({
 
 export type Expense = z.infer<typeof ExpenseSchema>
 
-export const createExpenseSchema = ExpenseSchema.omit({ id: true });
+export const createExpensesSchema = ExpenseSchema.omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+});
+
+export type CreateExpense = z.infer<typeof createExpensesSchema>;

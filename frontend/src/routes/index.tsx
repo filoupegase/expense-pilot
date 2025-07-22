@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { useGetExpenseTotalSpent } from "@/querys/useGetExpenseTotalSpent.ts";
+import { useGetExpenseTotalSpent } from "@/queries/useGetExpenseTotalSpent.ts";
 
 export const Route = createFileRoute("/")({
   component: Index,

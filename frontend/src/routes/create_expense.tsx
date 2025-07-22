@@ -1,13 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { getAllExpensesQueryOptions } from "@/querys/useGetAllExpenses.ts";
+import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { api } from "@/lib/api.ts";
-
-import { createExpenseSchema } from "../../../server/sharedTypes";
+import { toast } from "sonner";
+import { type CreateExpense, createExpensesSchema } from "../../../server/sharedTypes";
+import { createExpense } from "@/lib/api.ts";
+import { loadingCreateExpensesQueryOptions } from "@/queries/useLoadingCreateExpenses.ts";
 
 export const Route = createFileRoute("/create_expense")({
   component: Index,
@@ -22,26 +23,40 @@ function Index() {
       title: "",
       amount: "0",
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value }: { value: CreateExpense }) => {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
       const existingExpenses = await queryClient.ensureQueryData(
         getAllExpensesQueryOptions()
       );
 
       await navigate({ to: "/expenses" });
 
-      const res = await api.expenses.$post({ json: value });
-      if (!res.ok) {
-        throw new Error("Failed to create expense");
+      //loading state
+      queryClient.setQueryData(loadingCreateExpensesQueryOptions.queryKey, {
+        expense: value,
+      });
+
+      try {
+        const newExpense = await createExpense({ value });
+
+        queryClient.setQueryData(
+          getAllExpensesQueryOptions().queryKey, {
+            ...existingExpenses,
+            expenses: [newExpense, ...existingExpenses.expenses],
+          }
+        )
+        toast("Expense Created", {
+          description: `Successfully created new expense ${newExpense.id}`,
+        });
+
+      } catch (error) {
+        toast("Error", {
+          description: "Failed to create expense new expense",
+        });
+      } finally {
+        queryClient.setQueryData(loadingCreateExpensesQueryOptions.queryKey, {});
       }
-
-      const newExpense = await res.json();
-
-      queryClient.setQueryData(
-        getAllExpensesQueryOptions().queryKey, {
-          ...existingExpenses,
-          expenses: [newExpense, ...existingExpenses.expenses],
-        }
-      )
     },
   });
 
@@ -58,7 +73,7 @@ function Index() {
         <form.Field
           name="title"
           validators={{
-            onChange: createExpenseSchema.shape.title,
+            onChange: createExpensesSchema.shape.title,
           }}
           children={(field) => (
             <div>
@@ -79,7 +94,7 @@ function Index() {
         <form.Field
           name="amount"
           validators={{
-            onChange: createExpenseSchema.shape.amount,
+            onChange: createExpensesSchema.shape.amount,
           }}
           children={(field) => (
             <div>

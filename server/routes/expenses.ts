@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { createExpenseSchema, type Expense } from "../sharedTypes.ts";
+import { createExpensesSchema, type Expense } from "../sharedTypes.ts";
 
 const createExpense = (id: number, title: string, amount: string): Expense => ({
   id,
@@ -15,7 +15,7 @@ export const expensesRoutes = new Hono()
       expenses: [...fakeExpenses],
     });
   })
-  .post("/", zValidator("json", createExpenseSchema), (c) => {
+  .post("/", zValidator("json", createExpensesSchema), (c) => {
     const expense = c.req.valid("json");
 
     fakeExpenses.push({ ...expense, id: fakeExpenses.length + 1 });
