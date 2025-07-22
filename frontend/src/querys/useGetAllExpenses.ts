@@ -7,7 +7,7 @@ export const queryParams = {
   enabled: true,
 } as const;
 
-function getAllExpensesQueryOptions() {
+export function getAllExpensesQueryOptions() {
   return queryOptions({
     queryKey: [...queryParams.getQueryKey()],
     queryFn: async () => {
@@ -19,7 +19,7 @@ function getAllExpensesQueryOptions() {
       return await res.json();
     },
     enabled: queryParams.enabled,
-    staleTime: minutesToMilliseconds(5) // Cache for 5 minutes
+    staleTime: minutesToMilliseconds(5), // Cache for 5 minutes
   });
 }
 
