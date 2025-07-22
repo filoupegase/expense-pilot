@@ -20,8 +20,11 @@ function NavBar() {
           Expenses
         </Link>
         <Link to="/create_expense" className="[&.active]:font-bold">
-          Create Expense
+          Create
         </Link>
+        {/*<Link to="/_authenticated/profile" className="[&.active]:font-bold">*/}
+        {/*  Profile*/}
+        {/*</Link>*/}
       </div>
     </div>
   );

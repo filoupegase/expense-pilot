@@ -18,10 +18,9 @@ function Index() {
     defaultValues: {
       title: "",
       amount: "0",
+      date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
-      await new Promise(resolve => setTimeout(resolve, 2500));
-
       const res = await api.expenses.$post({ json: value });
       if (!res.ok) {
         throw new Error("Failed to create expense");

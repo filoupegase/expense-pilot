@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { api } from "@/lib/api.ts";
 import { minutesToMilliseconds } from "@/helpers/times.ts";
@@ -19,11 +19,10 @@ function getExpenseTotalSpentGroupedOptions() {
 
       return await res.json();
     },
-    enabled: queryParams.enabled,
     staleTime: minutesToMilliseconds(10) // Cache for 10 minutes
   });
 }
 
 export const useGetExpenseTotalSpent = () => {
-  return useQuery(getExpenseTotalSpentGroupedOptions());
+  return useSuspenseQuery(getExpenseTotalSpentGroupedOptions());
 };
