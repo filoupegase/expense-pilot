@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { useLoadingCreateExpenses } from "@/queries/useLoadingCreateExpenses.ts";
 import { useGetAllExpenses } from "@/queries/useGetAllExpenses.ts";
+import { Trash } from 'lucide-react';
+import { Button } from "@/components/ui/Button";
 import {
   Table,
   TableBody,
@@ -11,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export const Route = createFileRoute("/expenses")({
   component: Index,
@@ -43,9 +45,12 @@ function Index() {
               </TableCell>
               <TableCell>{loadingCreateExpense?.expense.title}</TableCell>
               <TableCell>{loadingCreateExpense?.expense.amount}</TableCell>
-              {/*<TableCell>
-              {loadingCreateExpense?.expense.date.split("T")[0]}
-               </TableCell>*/}
+              <TableCell>
+                {/*{loadingCreateExpense?.expense.date.split("T")[0]}*/}
+              </TableCell>
+              <TableCell className="font-medium">
+                <Skeleton className="h-4" />
+              </TableCell>
             </TableRow>
           )}
           {isPending
@@ -62,6 +67,12 @@ function Index() {
                   <TableCell>
                     <Skeleton className="h-4" />
                   </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4" />
+                  </TableCell>
                 </TableRow>
               ))
             : data?.expenses.map((expense) => (
@@ -69,10 +80,21 @@ function Index() {
                 <TableCell className="font-medium">{expense.id}</TableCell>
                 <TableCell>{expense.title}</TableCell>
                 <TableCell>{expense.amount}</TableCell>
+                <TableCell>
+                  <ExpenseDeleteButton id={expense.id} />
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
     </div>
   );
+}
+
+function ExpenseDeleteButton(id: { id: number }) {
+  return (
+    <Button variant="outline" size='icon'>
+      <Trash className='h-4 w-4' />
+    </Button>
+  )
 }

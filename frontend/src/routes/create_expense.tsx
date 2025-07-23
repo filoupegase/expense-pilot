@@ -50,7 +50,7 @@ function Index() {
           description: `Successfully created new expense ${newExpense.id}`,
         });
 
-      } catch (error) {
+      } catch {
         toast("Error", {
           description: "Failed to create expense new expense",
         });
