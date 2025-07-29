@@ -6,7 +6,6 @@
   "scripts": {
     "start": "bun run server/index.ts",
     "dev": "bun --watch server/index.ts",
-    ,
     "clean": "rm -rf dist && echo 'Done.'",
     "typecheck": "tsc"
   },

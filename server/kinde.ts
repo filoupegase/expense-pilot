@@ -8,7 +8,6 @@ import { type Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 
-// Client for authorization code flow
 export const kindeClient = createKindeServerClient(GrantType.AUTHORIZATION_CODE, {
   authDomain: process.env.KINDE_DOMAIN!,
   clientId: process.env.KINDE_CLIENT_ID!,
@@ -61,9 +60,10 @@ export const getUser = createMiddleware<Env>(async (c, next) => {
 
     const user: UserType = await kindeClient.getUserProfile(manager);
     c.set("user", user);
-    
+
     await next();
   } catch (error) {
     console.error(error);
+    return c.json({ error: "Unauthorized" }, 401);
   }
 });

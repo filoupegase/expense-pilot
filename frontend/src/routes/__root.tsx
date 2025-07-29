@@ -8,7 +8,7 @@ export const Route = createRootRoute({
 
 function NavBar() {
   return (
-    <div className='p-2 flex justify-between items-baseline max-w-2xl m-auto'>
+    <div className="p-2 flex justify-between items-baseline max-w-2xl m-auto">
       <Link to="/"><h1 className="text-2xl font-bold">Expense Tracker</h1></Link>
       <div className="p-2 flex gap-2">
         <Link to="/" className="[&.active]:font-bold">
@@ -23,9 +23,9 @@ function NavBar() {
         <Link to="/create_expense" className="[&.active]:font-bold">
           Create
         </Link>
-        {/*<Link to="/_authenticated/profile" className="[&.active]:font-bold">*/}
-        {/*  Profile*/}
-        {/*</Link>*/}
+        <Link to="/profile" className="[&.active]:font-bold">
+          Profile
+        </Link>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-//import { createFileRoute } from "@tanstack/react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
+import { createFileRoute } from "@tanstack/react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
-// export const Profile = createFileRoute("/_authenticated/profile")({
-//   component: Index,
-// });
+export const Route = createFileRoute("/profile")({
+  component: Index,
+});
 
 function Index() {
   return (
@@ -14,5 +14,5 @@ function Index() {
       </Avatar>
       <a href="/api/logout">Logout!</a>
     </div>
-  )
+  );
 }
