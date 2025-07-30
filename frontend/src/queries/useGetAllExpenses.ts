@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api.ts";
-import { minutesToMilliseconds } from "@/helpers/times.ts";
+import { api } from "@/lib/api";
+import { minutesToMilliseconds } from "@/helpers/times";
 
 export const queryParams = {
   getQueryKey: () => ["get-all-expenses"],

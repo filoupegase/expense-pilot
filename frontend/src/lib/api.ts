@@ -14,3 +14,12 @@ export async function createExpense({ value }: { value: CreateExpense }
   const newExpense = await res.json();
   return newExpense;
 }
+
+export async function getCurrentUser() {
+  const res = await api.me.$get();
+  if (!res.ok) {
+    throw new Error("server error");
+  }
+  const data = await res.json();
+  return data;
+}

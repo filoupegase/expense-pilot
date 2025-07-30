@@ -4,16 +4,16 @@ import { type CreateExpense } from "../../../server/sharedTypes";
 
 const getQueryKey = {
   queryKey: () => ["create-expense-loading"],
-} as const
+} as const;
 
-export const loadingCreateExpensesQueryOptions = queryOptions<{
+export const loadingCreateExpenseQueryOptions = queryOptions<{
   expense?: CreateExpense;
 }>({
   queryKey: getQueryKey.queryKey(),
   queryFn: async () => {
-    return {}
+    return {};
   },
   staleTime: Infinity,
 });
 
-export const useLoadingCreateExpenses = () => useQuery(loadingCreateExpensesQueryOptions);
+export const useLoadingCreateExpenses = () => useQuery(loadingCreateExpenseQueryOptions);

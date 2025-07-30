@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { useGetExpenseTotalSpent } from "@/queries/useGetExpenseTotalSpent.ts";
+import { useGetExpenseTotalSpent } from "@/queries/useGetExpenseTotalSpent";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   component: Index,
 });
 
@@ -15,7 +15,7 @@ function Index() {
     <Card className="w-[350px] m-auto">
       <CardHeader>
         <CardTitle>Total Spent</CardTitle>
-        <CardDescription>The total amount you`ve spent</CardDescription>
+        <CardDescription>The total amount you've spent</CardDescription>
       </CardHeader>
       <CardContent>{isPending ? "..." : data.total}</CardContent>
     </Card>

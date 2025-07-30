@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useLoadingCreateExpenses } from "@/queries/useLoadingCreateExpenses.ts";
-import { useGetAllExpenses } from "@/queries/useGetAllExpenses.ts";
-import { Trash } from 'lucide-react';
+import { useLoadingCreateExpenses } from "@/queries/useLoadingCreateExpenses";
+import { useGetAllExpenses } from "@/queries/useGetAllExpenses";
+import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
   Table,
@@ -13,8 +13,9 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_authenticated/expenses")({
   component: Index,
 });
 
@@ -92,9 +93,10 @@ function Index() {
 }
 
 function ExpenseDeleteButton(id: { id: number }) {
+  const queryClient = useQueryClient();
   return (
-    <Button variant="outline" size='icon'>
-      <Trash className='h-4 w-4' />
+    <Button variant="outline" size="icon">
+      <Trash className="h-4 w-4" />
     </Button>
-  )
+  );
 }

@@ -1,16 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses.ts";
+import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { toast } from "sonner";
-import { type CreateExpense, createExpensesSchema } from "../../../server/sharedTypes";
-import { createExpense } from "@/lib/api.ts";
-import { loadingCreateExpensesQueryOptions } from "@/queries/useLoadingCreateExpenses.ts";
+import { type CreateExpense, createExpensesSchema } from "../../../../server/sharedTypes";
+import { createExpense } from "@/lib/api";
+import { loadingCreateExpenseQueryOptions } from "@/queries/useLoadingCreateExpenses";
 
-export const Route = createFileRoute("/create_expense")({
+export const Route = createFileRoute("/_authenticated/create_expense")({
   component: Index,
 });
 
@@ -32,8 +32,8 @@ function Index() {
 
       await navigate({ to: "/expenses" });
 
-      //loading state
-      queryClient.setQueryData(loadingCreateExpensesQueryOptions.queryKey, {
+      // loading state
+      queryClient.setQueryData(loadingCreateExpenseQueryOptions.queryKey, {
         expense: value,
       });
 
@@ -45,17 +45,19 @@ function Index() {
             ...existingExpenses,
             expenses: [newExpense, ...existingExpenses.expenses],
           }
-        )
-        toast("Expense Created", {
-          description: `Successfully created new expense ${newExpense.id}`,
-        });
+        );
 
+        toast("Expense Created", {
+          description: `Successfully created new expense: ${newExpense.id}`,
+        });
+        // success state
       } catch {
+        // error state
         toast("Error", {
-          description: "Failed to create expense new expense",
+          description: `Failed to create new expense`,
         });
       } finally {
-        queryClient.setQueryData(loadingCreateExpensesQueryOptions.queryKey, {});
+        queryClient.setQueryData(loadingCreateExpenseQueryOptions.queryKey, {});
       }
     },
   });
