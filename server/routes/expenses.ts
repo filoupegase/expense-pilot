@@ -1,28 +1,42 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { createExpensesSchema, type Expense } from "../sharedTypes.ts";
+import { createExpensesSchema } from "../sharedTypes.ts";
 import { getUser } from "../kinde";
-
-const createExpense = (id: number, title: string, amount: string): Expense => ({
-  id,
-  title,
-  amount,
-});
+import { db } from "../db";
+import {
+  expenses as expensesTable,
+  type selectExpensesSchema as Expense,
+} from "../db/schema/expenses.ts";
+import { eq } from "drizzle-orm";
 
 export const expensesRoutes = new Hono()
-  .get("/", getUser, (c) => {
-    // await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate a delay
+  .get("/", getUser, async (c) => {
+    const user = c.get("user");
+
+    const res = await db
+      .select()
+      .from(expensesTable)
+      .where(eq(expensesTable.userId, user.id));
+
     return c.json({
-      expenses: [...fakeExpenses],
+      expenses: res,
+      // expenses: [...fakeExpenses],
     });
   })
-  .post("/", getUser, zValidator("json", createExpensesSchema), (c) => {
+  .post("/", getUser, zValidator("json", createExpensesSchema), async (c) => {
     const expense = c.req.valid("json");
 
-    fakeExpenses.push({ ...expense, id: fakeExpenses.length + 1 });
+    const user = c.get("user");
+
+    const result = await db
+      .insert(expensesTable)
+      .values({ ...expense, userId: user.id })
+      .returning();
+
+    //fakeExpenses.push({ ...expense, id: fakeExpenses.length + 1 });
 
     c.status(201);
-    return c.json(expense);
+    return c.json(result);
   })
   .get("/:id{[0-9]+}", getUser, (c) => {
     const id = Number.parseInt(c.req.param("id"));
@@ -45,12 +59,21 @@ export const expensesRoutes = new Hono()
     return c.json({ expense: deletedExpense });
   })
   .get("/total-spent", getUser, (c) => {
-    const total = fakeExpenses.reduce((sum, expense) => sum + expense.amount, "0");
+    const total = fakeExpenses.reduce(
+      (sum, expense) =>
+        sum + +expense.amount, 0
+    );
 
     return c.json({ total });
   });
 
-const fakeExpenses: Expense[] = [
+const createExpense = (id: number, title: string, amount: string) => ({
+  id,
+  title,
+  amount,
+});
+
+const fakeExpenses = [
   createExpense(1, "Groceries", "50"),
   createExpense(2, "Utilities", "100"),
   createExpense(3, "Rent", "1200"),
