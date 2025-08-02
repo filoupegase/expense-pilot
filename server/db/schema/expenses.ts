@@ -1,4 +1,4 @@
-import { serial, pgTable, text, numeric, uniqueIndex } from "drizzle-orm/pg-core";
+import { serial, pgTable, text, numeric, uniqueIndex, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -10,7 +10,7 @@ export const expenses = pgTable(
     title: text("title").notNull(),
     amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
     // date: date("date").notNull(),
-    // createdAt: timestamp('created_at').defaultNow()
+    createdAt: timestamp("created_at").defaultNow()
   },
   (expenses) => [
     uniqueIndex("email_idx").on(expenses.userId)

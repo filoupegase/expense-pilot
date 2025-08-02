@@ -17,4 +17,4 @@ const apiRoutes = app.basePath("/api")
 app.use("*", serveStatic({ root: "./frontend/dist" }));
 app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
-export { app };
+export default app;

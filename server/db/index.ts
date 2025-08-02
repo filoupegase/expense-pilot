@@ -1,7 +1,13 @@
 import { drizzle } from "drizzle-orm/postgres-js";
+
 import postgres from "postgres";
+import { z } from "zod";
 
-const queryClient = postgres(process.env.DATABASE_URL);
-const db = drizzle({ client: queryClient });
+const PostgresEnv = z.object({
+  DATABASE_URL: z.string()
+});
+const ProcessEnv = PostgresEnv.parse(process.env);
 
-export { db };
+// for query purposes
+const queryClient = postgres(ProcessEnv.DATABASE_URL);
+export const db = drizzle(queryClient);

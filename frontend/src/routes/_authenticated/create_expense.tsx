@@ -5,14 +5,26 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import type { AnyFieldApi } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { type CreateExpense, createExpensesSchema } from "../../../../server/sharedTypes";
+import { createExpensesSchema } from "../../../../server/sharedTypes";
 import { createExpense } from "@/lib/api";
 import { loadingCreateExpenseQueryOptions } from "@/queries/useLoadingCreateExpenses";
 
 export const Route = createFileRoute("/_authenticated/create_expense")({
   component: Index,
 });
+
+function FieldInfo({ field }: { field: AnyFieldApi }) {
+  return (
+    <>
+      {field.state.meta.isTouched && !field.state.meta.isValid ? (
+        <em>{field.state.meta.errors.map((err) => err.message).join(",")}</em>
+      ) : null}
+      {field.state.meta.isValidating ? "Validating..." : null}
+    </>
+  );
+}
 
 function Index() {
   const queryClient = useQueryClient();
@@ -22,15 +34,19 @@ function Index() {
     defaultValues: {
       title: "",
       amount: "0",
+      //date: new Date().toISOString(),
     },
-    onSubmit: async ({ value }: { value: CreateExpense }) => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+    validators: {
+      onChange: createExpensesSchema,
+    },
+    onSubmit: async ({ value }) => {
+      //await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const existingExpenses = await queryClient.ensureQueryData(
         getAllExpensesQueryOptions()
       );
 
-      await navigate({ to: "/expenses" });
+      navigate({ to: "/expenses" });
 
       // loading state
       queryClient.setQueryData(loadingCreateExpenseQueryOptions.queryKey, {
@@ -44,8 +60,7 @@ function Index() {
           getAllExpensesQueryOptions().queryKey, {
             ...existingExpenses,
             expenses: [newExpense, ...existingExpenses.expenses],
-          }
-        );
+          });
 
         toast("Expense Created", {
           description: `Successfully created new expense: ${newExpense.id}`,
@@ -65,21 +80,19 @@ function Index() {
   return (
     <div className="p-2">
       <h2>Create Expense</h2>
-      <form className="flex flex-col gap-y-4 max-w-3xl m-auto"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
+      <form
+        className="flex flex-col gap-y-4 max-w-xl m-auto"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void form.handleSubmit();
+        }}
       >
         <form.Field
           name="title"
-          validators={{
-            onChange: createExpensesSchema.shape.title,
-          }}
           children={(field) => (
             <div>
-              <Label htmlFor={field.name}>Title :</Label>
+              <Label htmlFor={field.name}>Title</Label>
               <Input
                 id={field.name}
                 name={field.name}
@@ -87,20 +100,16 @@ function Index() {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
               />
-              {field.state.meta.isTouched && !field.state.meta.isValid ? (
-                <em>{field.state.meta.errors.join(", ")}</em>
-              ) : null}
+              <FieldInfo field={field} />
             </div>
           )}
         />
+
         <form.Field
           name="amount"
-          validators={{
-            onChange: createExpensesSchema.shape.amount,
-          }}
           children={(field) => (
             <div>
-              <Label htmlFor={field.name}>Amont :</Label>
+              <Label htmlFor={field.name}>Amount</Label>
               <Input
                 id={field.name}
                 name={field.name}
@@ -109,12 +118,29 @@ function Index() {
                 type="number"
                 onChange={(e) => field.handleChange(e.target.value)}
               />
-              {field.state.meta.isTouched && !field.state.meta.isValid ? (
-                <em>{field.state.meta.errors.join(", ")}</em>
-              ) : null}
+              <FieldInfo field={field} />
             </div>
           )}
         />
+
+        {/*<form.Field*/}
+        {/*  name="date"*/}
+        {/*  children={(field) => (*/}
+        {/*    <div className="self-center">*/}
+        {/*      <Calendar*/}
+        {/*        mode="single"*/}
+        {/*        selected={new Date(field.state.value)}*/}
+        {/*        onSelect={(date) =>*/}
+        {/*          field.handleChange((date ?? new Date()).toISOString())*/}
+        {/*        }*/}
+        {/*        className="rounded-md border"*/}
+        {/*      />*/}
+        {/*      {field.state.meta.touchedErrors ? (*/}
+        {/*        <em>{field.state.meta.touchedErrors}</em>*/}
+        {/*      ) : null}*/}
+        {/*    </div>*/}
+        {/*  )}*/}
+        {/*/>*/}
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
