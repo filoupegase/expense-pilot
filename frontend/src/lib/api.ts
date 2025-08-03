@@ -4,8 +4,7 @@ import type { ApiRoutes } from "../../../server/app";
 
 export const { api } = hc<ApiRoutes>("/");
 
-export async function createExpense({ value }: { value: CreateExpense }
-): Promise<CreateExpense> {
+export async function createExpense({ value }: { value: CreateExpense }) {
   const res = await api.expenses.$post({ json: value });
 
   if (!res.ok) {
@@ -22,6 +21,7 @@ export async function getCurrentUser() {
   if (!res.ok) {
     throw new Error("server error");
   }
+
   const data = await res.json();
   return data;
 }
