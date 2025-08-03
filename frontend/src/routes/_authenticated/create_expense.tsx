@@ -4,27 +4,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { FieldInfo } from "@/components/fieldInfo";
 import { Label } from "@/components/ui/Label";
-import type { AnyFieldApi } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { createExpensesSchema } from "../../../../server/sharedTypes";
+import { createExpenseSchema } from "../../../../server/sharedTypes";
 import { createExpense } from "@/lib/api";
 import { loadingCreateExpenseQueryOptions } from "@/queries/useLoadingCreateExpenses";
 
 export const Route = createFileRoute("/_authenticated/create_expense")({
   component: Index,
 });
-
-function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && !field.state.meta.isValid ? (
-        <em>{field.state.meta.errors.map((err) => err.message).join(",")}</em>
-      ) : null}
-      {field.state.meta.isValidating ? "Validating..." : null}
-    </>
-  );
-}
 
 function Index() {
   const queryClient = useQueryClient();
@@ -37,7 +26,7 @@ function Index() {
       //date: new Date().toISOString(),
     },
     validators: {
-      onChange: createExpensesSchema,
+      onChange: createExpenseSchema,
     },
     onSubmit: async ({ value }) => {
       //await new Promise((resolve) => setTimeout(resolve, 5000));
