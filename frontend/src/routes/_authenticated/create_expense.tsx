@@ -46,7 +46,7 @@ function Index() {
       try {
         const newExpense = await createExpense({ value });
 
-        await new Promise((resolve) => setTimeout(resolve, 2500));
+        await new Promise((resolve) => setTimeout(resolve, 2800));
 
         queryClient.setQueryData(
           getAllExpensesQueryOptions().queryKey, {
@@ -54,10 +54,10 @@ function Index() {
             expenses: [newExpense, ...existingExpenses.expenses],
           });
 
+        // success state
         toast("Expense Created", {
           description: `Successfully created new expense: ${newExpense.id}`,
         });
-        // success state
       } catch {
         // error state
         toast("Error", {

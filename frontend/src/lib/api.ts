@@ -27,6 +27,8 @@ export async function getCurrentUser() {
 }
 
 export async function deleteExpense({ id }: { id: number }) {
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
   const res = await api.expenses[":id{[0-9]+}"].$delete({
     param: { id: id.toString() },
   });
