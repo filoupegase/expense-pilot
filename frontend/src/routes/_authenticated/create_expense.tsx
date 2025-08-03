@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Calendar } from "@/components/ui/Calendar";
 import { FieldInfo } from "@/components/fieldInfo";
 import { Label } from "@/components/ui/Label";
 import { toast } from "sonner";
@@ -23,19 +24,19 @@ function Index() {
     defaultValues: {
       title: "",
       amount: "0",
-      //date: new Date().toISOString(),
+      date: new Date().toISOString(),
     },
     validators: {
       onChange: createExpenseSchema,
     },
     onSubmit: async ({ value }) => {
-      //await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       const existingExpenses = await queryClient.ensureQueryData(
         getAllExpensesQueryOptions()
       );
 
-      navigate({ to: "/expenses" });
+      await navigate({ to: "/expenses" });
 
       // loading state
       queryClient.setQueryData(loadingCreateExpenseQueryOptions.queryKey, {
@@ -44,6 +45,8 @@ function Index() {
 
       try {
         const newExpense = await createExpense({ value });
+
+        await new Promise((resolve) => setTimeout(resolve, 2500));
 
         queryClient.setQueryData(
           getAllExpensesQueryOptions().queryKey, {
@@ -77,6 +80,7 @@ function Index() {
           void form.handleSubmit();
         }}
       >
+
         <form.Field
           name="title"
           children={(field) => (
@@ -112,24 +116,23 @@ function Index() {
           )}
         />
 
-        {/*<form.Field*/}
-        {/*  name="date"*/}
-        {/*  children={(field) => (*/}
-        {/*    <div className="self-center">*/}
-        {/*      <Calendar*/}
-        {/*        mode="single"*/}
-        {/*        selected={new Date(field.state.value)}*/}
-        {/*        onSelect={(date) =>*/}
-        {/*          field.handleChange((date ?? new Date()).toISOString())*/}
-        {/*        }*/}
-        {/*        className="rounded-md border"*/}
-        {/*      />*/}
-        {/*      {field.state.meta.touchedErrors ? (*/}
-        {/*        <em>{field.state.meta.touchedErrors}</em>*/}
-        {/*      ) : null}*/}
-        {/*    </div>*/}
-        {/*  )}*/}
-        {/*/>*/}
+        <form.Field
+          name="date"
+          children={(field) => (
+            <div className="self-center">
+              <Calendar
+                mode="single"
+                className="rounded-md border"
+                selected={new Date(field.state.value)}
+                onSelect={(date: Date | undefined) =>
+                  field.handleChange((date ?? new Date()).toISOString())
+                }
+              />
+              <FieldInfo field={field} />
+            </div>
+          )}
+        />
+
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (

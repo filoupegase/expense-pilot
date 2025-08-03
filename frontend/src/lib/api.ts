@@ -7,6 +7,7 @@ export const { api } = hc<ApiRoutes>("/");
 export async function createExpense({ value }: { value: CreateExpense }
 ): Promise<CreateExpense> {
   const res = await api.expenses.$post({ json: value });
+
   if (!res.ok) {
     throw new Error("Failed to create expense");
   }
@@ -17,6 +18,7 @@ export async function createExpense({ value }: { value: CreateExpense }
 
 export async function getCurrentUser() {
   const res = await api.me.$get();
+
   if (!res.ok) {
     throw new Error("server error");
   }

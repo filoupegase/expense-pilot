@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useLoadingCreateExpenses } from "@/queries/useLoadingCreateExpenses";
 import { useGetAllExpenses } from "@/queries/useGetAllExpenses";
-import { Trash } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import {
   Table,
   TableBody,
@@ -13,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useQueryClient } from "@tanstack/react-query";
+import { ExpenseDeleteButton } from "@/components/expenseDeleteButton";
 
 export const Route = createFileRoute("/_authenticated/expenses")({
   component: Index,
@@ -47,7 +45,7 @@ function Index() {
               <TableCell>{loadingCreateExpense?.expense.title}</TableCell>
               <TableCell>{loadingCreateExpense?.expense.amount}</TableCell>
               <TableCell>
-                {/*{loadingCreateExpense?.expense.date.split("T")[0]}*/}
+                {loadingCreateExpense?.expense.date.split("T")[0]}
               </TableCell>
               <TableCell className="font-medium">
                 <Skeleton className="h-4" />
@@ -62,18 +60,13 @@ function Index() {
                   <TableCell className="font-medium">
                     <Skeleton className="h-4" />
                   </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4" />
-                  </TableCell>
+                  {Array(4)
+                    .fill(0)
+                    .map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4" />
+                      </TableCell>
+                    ))}
                 </TableRow>
               ))
             : data?.expenses.map((expense) => (
@@ -81,6 +74,7 @@ function Index() {
                 <TableCell className="font-medium">{expense.id}</TableCell>
                 <TableCell>{expense.title}</TableCell>
                 <TableCell>{expense.amount}</TableCell>
+                <TableCell>{expense.date.split("T")[0]}</TableCell>
                 <TableCell>
                   <ExpenseDeleteButton id={expense.id} />
                 </TableCell>
@@ -89,14 +83,5 @@ function Index() {
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-function ExpenseDeleteButton(id: { id: number }) {
-  const queryClient = useQueryClient();
-  return (
-    <Button variant="outline" size="icon">
-      <Trash className="h-4 w-4" />
-    </Button>
   );
 }

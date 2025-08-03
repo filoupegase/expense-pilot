@@ -17,7 +17,8 @@ function getExpenseTotalSpentGroupedOptions() {
         throw new Error("Failed to fetch total spent");
       }
 
-      return await res.json();
+      const data = await res.json();
+      return data;
     },
     staleTime: minutesToMilliseconds(10) // Cache for 10 minutes
   });
