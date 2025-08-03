@@ -15,6 +15,13 @@
       "when": 1754168585005,
       "tag": "0001_flimsy_mac_gargan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754212412531,
+      "tag": "0002_tiny_stick",
+      "breakpoints": true
     }
   ]
 }
