@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { ExpenseDeleteButton } from "@/components/expenseDeleteButton";
+import ExpenseDeleteButton from "@/components/business/expense-delete-button";
 
 export const Route = createFileRoute("/_authenticated/expenses")({
   component: Index,

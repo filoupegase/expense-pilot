@@ -1,16 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses";
 import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Calendar } from "@/components/ui/Calendar";
-import { FieldInfo } from "@/components/fieldInfo";
-import { Label } from "@/components/ui/Label";
 import { toast } from "sonner";
 import { createExpenseSchema } from "../../../../server/sharedTypes";
 import { createExpense } from "@/lib/api";
+import { useAppForm } from "@/hooks/form";
 import { loadingCreateExpenseQueryOptions } from "@/queries/useLoadingCreateExpenses";
+import { formOpts } from "@/CreateExpenseForm/shared-form";
 
 export const Route = createFileRoute("/_authenticated/create_expense")({
   component: Index,
@@ -20,12 +16,8 @@ function Index() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const form = useForm({
-    defaultValues: {
-      title: "",
-      amount: "0",
-      date: new Date().toISOString(),
-    },
+  const form = useAppForm({
+    ...formOpts,
     validators: {
       onChange: createExpenseSchema,
     },
@@ -80,67 +72,23 @@ function Index() {
           void form.handleSubmit();
         }}
       >
-
-        <form.Field
+        <form.AppField
           name="title"
-          children={(field) => (
-            <div>
-              <Label htmlFor={field.name}>Title</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <FieldInfo field={field} />
-            </div>
-          )}
+          children={(field) => <field.TextField label="Title" />}
         />
-
-        <form.Field
+        <form.AppField
           name="amount"
-          children={(field) => (
-            <div>
-              <Label htmlFor={field.name}>Amount</Label>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                type="number"
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <FieldInfo field={field} />
-            </div>
-          )}
+          children={(field) => <field.TextField label="Amount" />}
         />
-
-        <form.Field
-          name="date"
-          children={(field) => (
-            <div className="self-center">
-              <Calendar
-                mode="single"
-                className="rounded-md border"
-                selected={new Date(field.state.value)}
-                onSelect={(date: Date | undefined) =>
-                  field.handleChange((date ?? new Date()).toISOString())
-                }
-              />
-              <FieldInfo field={field} />
-            </div>
-          )}
-        />
-
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit, isSubmitting]) => (
-            <Button className="mt-4" type="submit" disabled={!canSubmit}>
-              {isSubmitting ? "..." : "Submit"}
-            </Button>
-          )}
-        />
+        <div className="self-center">
+          <form.AppField
+            name="date"
+            children={(field) => <field.CalendarFields />}
+          />
+        </div>
+        <form.AppForm>
+          <form.SubscribeButton />
+        </form.AppForm>
       </form>
     </div>
   );

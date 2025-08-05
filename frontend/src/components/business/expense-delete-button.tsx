@@ -5,7 +5,7 @@ import { deleteExpense } from "@/lib/api.ts";
 import { toast } from "sonner";
 import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses.ts";
 
-function ExpenseDeleteButton({ id }: { id: number }) {
+export default function ExpenseDeleteButton({ id }: { id: number }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -42,5 +42,3 @@ function ExpenseDeleteButton({ id }: { id: number }) {
     </Button>
   );
 }
-
-export { ExpenseDeleteButton };
