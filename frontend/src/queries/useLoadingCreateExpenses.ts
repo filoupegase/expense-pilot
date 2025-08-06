@@ -2,18 +2,20 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { type CreateExpense } from "../../../server/sharedTypes";
 
-const getQueryKey = {
+const getOptions = {
   queryKey: () => ["create-expense-loading"],
 } as const;
 
 export const loadingCreateExpenseQueryOptions = queryOptions<{
   expense?: CreateExpense;
 }>({
-  queryKey: getQueryKey.queryKey(),
+  queryKey: getOptions.queryKey(),
   queryFn: async () => {
     return {};
   },
   staleTime: Infinity,
 });
 
-export const useLoadingCreateExpenses = () => useQuery(loadingCreateExpenseQueryOptions);
+export const useLoadingCreateExpenses = () => {
+  return useQuery(loadingCreateExpenseQueryOptions);
+};

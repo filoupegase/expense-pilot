@@ -3,14 +3,14 @@ import { queryOptions } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { minutesToMilliseconds } from "@/helpers/times";
 
-export const queryParams = {
+const options = {
   getQueryKey: () => ["total-spent"],
   enabled: true,
 } as const;
 
 function getExpenseTotalSpentGroupedOptions() {
   return queryOptions({
-    queryKey: [...queryParams.getQueryKey()],
+    queryKey: [...options.getQueryKey()],
     queryFn: async () => {
       const res = await api.expenses["total-spent"].$get();
       if (!res.ok) {
