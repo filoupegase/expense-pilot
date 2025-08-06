@@ -2,8 +2,9 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { createExpenseSchema } from "../sharedTypes.ts";
 import { getUser } from "../kinde";
-import { db } from "../db";
-import { expenses as expenseTable, insertExpensesSchema } from "../db/schema/expenses.ts";
+import { db } from "../../db/db";
+import { expenses as expenseTable } from "../../db/schema";
+import { insertExpensesSchema } from "../schema";
 import { eq, desc, sum, and } from "drizzle-orm";
 
 export const expensesRoutes = new Hono()

@@ -1,6 +1,6 @@
 {
-  "id": "0b585afc-b1bd-4287-83ef-8a01b01414a6",
-  "prevId": "1106075d-b121-4428-ab09-2ebaf35c491a",
+  "id": "f28bf213-167f-42c8-b255-89381d5ddddd",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -32,6 +32,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -51,7 +57,7 @@
               "nulls": "last"
             }
           ],
-          "isUnique": true,
+          "isUnique": false,
           "concurrently": false,
           "method": "btree",
           "with": {}

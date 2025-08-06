@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { insertExpensesSchema } from "./db/schema/expenses";
+import { insertExpensesSchema } from "./schema";
 
 export const createExpenseSchema = insertExpensesSchema.omit({
   id: true,
