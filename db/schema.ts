@@ -1,14 +1,14 @@
-import { serial, pgTable, text, numeric, index, timestamp, date } from "drizzle-orm/pg-core";
+import { uuid, pgTable, text, varchar, numeric, index, timestamp, date } from "drizzle-orm/pg-core";
 
 export const expenses = pgTable(
   "expenses",
   {
-    id: serial("id").primaryKey(),
+    id: uuid().primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
-    title: text("title").notNull(),
+    title: varchar({ length: 500 }).notNull(),
     amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
     date: date("date").notNull(),
-    createdAt: timestamp("created_at").defaultNow()
+    createdAt: timestamp({ withTimezone: true }).defaultNow(),
   },
   (expenses) => [
     index("email_idx").on(expenses.userId)
