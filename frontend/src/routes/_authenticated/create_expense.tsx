@@ -63,7 +63,7 @@ function Index() {
 
   return (
     <div className="p-2">
-      <h2>Create Expense</h2>
+      <h2 className="mb-4">Create Expense</h2>
       <form
         className="flex flex-col gap-y-4 max-w-xl m-auto"
         onSubmit={(e) => {

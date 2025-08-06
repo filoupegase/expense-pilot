@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { minutesToMilliseconds } from "@/helpers/times";
@@ -12,6 +12,7 @@ function getExpenseTotalSpentGroupedOptions() {
   return queryOptions({
     queryKey: [...options.getQueryKey()],
     queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
       const res = await api.expenses["total-spent"].$get();
       if (!res.ok) {
         throw new Error("Failed to fetch total spent");
@@ -25,5 +26,5 @@ function getExpenseTotalSpentGroupedOptions() {
 }
 
 export const useGetExpenseTotalSpent = () => {
-  return useSuspenseQuery(getExpenseTotalSpentGroupedOptions());
+  return useQuery(getExpenseTotalSpentGroupedOptions());
 };
