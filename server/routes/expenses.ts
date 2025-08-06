@@ -106,6 +106,7 @@ const createExpense = (id: number, title: string, amount: string) => ({
   amount,
 });
 
+// @ts-ignore
 const fakeExpenses = [
   createExpense(1, "Groceries", "50"),
   createExpense(2, "Utilities", "100"),

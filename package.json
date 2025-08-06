@@ -4,10 +4,16 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun server/index.ts",
-    "dev": "bun --watch server/index.ts",
+    "client": "cd client && bun run dev",
+    "server": "bun run --hot server/index.ts",
+    "dev": "concurrently \"bun run server\" \"bun run client\"",
     "clean": "rm -rf dist && echo 'Done.'",
-    "typecheck": "tsc"
+    "build": "bun build ./server/index.ts --outdir ./dist --target bun && cd client && bun run build",
+    "typecheck": "tsc",
+    "db:up": "docker compose up -d",
+    "db:generate:migration": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "latest",
