@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { insertExpensesSchema } from "./schema";
+import * as shema from "./schema";
 
-export const createExpenseSchema = insertExpensesSchema.omit({
+export const createExpenseSchema = shema.insertExpensesSchema.omit({
   id: true,
   userId: true,
   createdAt: true,

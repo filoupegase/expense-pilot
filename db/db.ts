@@ -4,8 +4,9 @@ import postgres from "postgres";
 import { z } from "zod";
 
 const PostgresEnv = z.object({
-  DATABASE_URL: z.string()
+  DATABASE_URL: z.string().startsWith("postgres://"),
 });
+
 const ProcessEnv = PostgresEnv.parse(process.env);
 
 // for query purposes

@@ -59,7 +59,7 @@ export const expensesRoutes = new Hono()
     return c.json({ expense });
   })
   .post("/", getUser, zValidator("json", createExpenseSchema), async (c) => {
-    const expense = await c.req.valid("json");
+    const expense = c.req.valid("json");
     const user = c.var.user;
 
     const validatedExpense = insertExpensesSchema.parse({
