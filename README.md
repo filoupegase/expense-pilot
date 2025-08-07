@@ -1,5 +1,7 @@
 # expense-pilot
 
+# WIP : start to be changed with an other authentication system
+
 🧾 Expense tracking monorepo pilot - fullstack testing ground for personal finance features
 
 ## Installation
