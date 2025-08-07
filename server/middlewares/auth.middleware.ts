@@ -1,6 +1,6 @@
 import { createMiddleware } from "hono/factory";
-import { auth } from "@/server/lib/auth";
-import type { AuthType } from "@/server/lib/create-app";
+import { auth } from "../lib/auth";
+import type { AuthType } from "../lib/create-app";
 
 export const authMiddleware = createMiddleware<AuthType>(async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });

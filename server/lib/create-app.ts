@@ -1,4 +1,4 @@
-import { auth } from "@/server/lib/auth.ts";
+import { auth } from "./auth.ts";
 
 export type AuthType = {
   Variables: {
