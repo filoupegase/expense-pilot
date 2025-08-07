@@ -9,16 +9,11 @@
     "dev": "concurrently \"bun run server\" \"bun run client\"",
     "clean": "rm -rf dist && echo 'Done.'",
     "build": "bun build ./server/index.ts --outdir ./dist --target bun && cd client && bun run build",
-    "typecheck": "tsc",
+    "ts:check": "tsc",
     "db:up": "docker compose up -d",
     "db:generate:migration": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
-  },
-  "devDependencies": {
-    "@flydotio/dockerfile": "latest",
-    "@types/bun": "latest",
-    "drizzle-kit": "^0.31.4"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
@@ -31,7 +26,12 @@
     "drizzle-zod": "^0.5.1",
     "hono": "^4.8.12",
     "pg": "^8.16.3",
-    "postgres": "^3.4.7",
     "zod": "^4.0.15"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "latest",
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4"
   }
 }
