@@ -1,13 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { openAPI } from "better-auth/plugins";
 import { db } from "../../db/db";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
   }),
-  // Allow requests from the frontend development server
-  trustedOrigins: ["http://localhost:5173"],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -18,4 +17,7 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
+  plugins: [
+    openAPI(),
+  ],
 });
