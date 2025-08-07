@@ -1,6 +1,6 @@
 import { useFieldContext } from "@/hooks/form-context";
 import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import FieldInfo from "@/components/ui-form/field-info";
 
 export default function TextFields({ label }: { label: string }) {
