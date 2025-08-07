@@ -7,6 +7,7 @@
     "client": "cd client && bun run dev",
     "server": "bun run --hot server/index.ts",
     "dev": "concurrently \"bun run server\" \"bun run client\"",
+    "updadte:all": "bun update && cd client && echo 'update client deps' && bun update",
     "clean": "rm -rf dist && echo 'Done.'",
     "build": "bun build ./server/index.ts --outdir ./dist --target bun && cd client && bun run build",
     "ts:check": "tsc",
@@ -14,9 +15,6 @@
     "db:generate:migration": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
-  },
-  "peerDependencies": {
-    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",
@@ -35,5 +33,8 @@
     "@types/pg": "^8.15.5",
     "drizzle-kit": "^0.31.4",
     "open-cli": "^8.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.3"
   }
 }
