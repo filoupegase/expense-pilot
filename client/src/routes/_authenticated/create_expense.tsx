@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createExpenseSchema } from "../../../../server/sharedTypes";
+import { createExpenseSchema } from "@server/sharedTypes";
 import { createExpense } from "@/lib/api";
 import { useAppForm } from "@/hooks/form";
 import { loadingCreateExpenseQueryOptions } from "@/queries/useLoadingCreateExpenses";
