@@ -11,4 +11,5 @@ export const insertExpensesSchema = createInsertSchema(expenses, {
 });
 
 // Schema for selecting a Expenses - can be used to validate API responses
-export const selectExpensesSchema = createSelectSchema(expenses);
+// https://orm.drizzle.team/docs/zod
+export const ExpensesSchema = createSelectSchema(expenses);
