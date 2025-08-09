@@ -1,11 +1,29 @@
 import { hc } from "hono/client";
-import { type CreateExpense } from "../../../server/sharedTypes";
-import type { ApiRoutes } from "../../../server/app";
+import type { CreateExpense, ErrorResponse, ApiRoutes } from "@/server/sharedTypes";
 
-export const { api } = hc<ApiRoutes>("/");
+const client = hc<ApiRoutes>("", {
+  fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+    return fetch(input, {
+      ...init,
+      credentials: "include"
+    });
+  }
+});
+
+export const getExpenses = async () => {
+  const res = await client.api.expenses.$get();
+
+  if (!res.ok) {
+    const data = (await res.json()) as unknown as ErrorResponse;
+    throw new Error(data.error);
+  }
+
+  const data = await res.json();
+  return data;
+};
 
 export async function createExpense({ value }: { value: CreateExpense }) {
-  const res = await api.expenses.$post({ json: value });
+  const res = await client.api.expenses.$post({ json: value });
 
   if (!res.ok) {
     throw new Error("Failed to create expense");
@@ -16,7 +34,7 @@ export async function createExpense({ value }: { value: CreateExpense }) {
 }
 
 export async function getCurrentUser() {
-  const res = await api.me.$get();
+  const res = await client.me.$get();
 
   if (!res.ok) {
     throw new Error("server error");
@@ -29,7 +47,7 @@ export async function getCurrentUser() {
 export async function deleteExpense({ id }: { id: number }) {
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  const res = await api.expenses[":id{[0-9]+}"].$delete({
+  const res = await client.expenses[":id{[0-9]+}"].$delete({
     param: { id: id.toString() },
   });
 

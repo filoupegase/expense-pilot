@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-import { type CreateExpense } from "../../../server/sharedTypes";
+import { type CreateExpense } from "@/server/sharedTypes";
 
 const getOptions = {
   queryKey: () => ["create-expense-loading"],

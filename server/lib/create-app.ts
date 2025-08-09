@@ -1,8 +1,10 @@
-import { auth } from "./auth.ts";
+import type { Env } from "hono";
 
-export type AuthType = {
+import { auth } from "./auth";
+
+export interface AuthType extends Env {
   Variables: {
     user: typeof auth.$Infer.Session.user;
     session: typeof auth.$Infer.Session.session;
   };
-};
+}

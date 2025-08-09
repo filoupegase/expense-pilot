@@ -17,7 +17,7 @@ export default ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@server": path.resolve(__dirname, "../server"),
+      "@/server": path.resolve(__dirname, "../server"),
     },
   },
   server: {

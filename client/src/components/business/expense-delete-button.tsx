@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Trash } from "lucide-react";
-import { deleteExpense } from "@/lib/api.ts";
+import { deleteExpense } from "@/lib/api";
 import { toast } from "sonner";
-import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses.ts";
+import { getAllExpensesQueryOptions } from "@/queries/useGetAllExpenses";
 
 export default function ExpenseDeleteButton({ id }: { id: number }) {
   const queryClient = useQueryClient();

@@ -2,46 +2,37 @@ import { Hono } from "hono";
 import { db } from "../../db/db";
 import { expenses as expenseTable } from "../../db/schema";
 import { insertExpensesSchema } from "../schema";
-import { eq, desc } from "drizzle-orm";
-import type { AuthType } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { authMiddleware } from "../middlewares/auth.middleware";
-
-export const expensesRoutes = new Hono<AuthType>()
-  .use(authMiddleware)
-  .get("/", async (c) => {
+export const expensesRoutes = new Hono();
+expensesRoutes.use(authMiddleware);
+expensesRoutes.get("/", async (c) => {
     const user = c.get("user");
-
     const expensesQuery = db
-      .select()
-      .from(expenseTable)
-      .where(eq(expenseTable.userId, user.id))
-      .orderBy(desc(expenseTable.createdAt))
-      .limit(100);
-
+        .select()
+        .from(expenseTable)
+        .where(eq(expenseTable.userId, user.id))
+        .orderBy(desc(expenseTable.createdAt))
+        .limit(100);
     const expenses = await expensesQuery;
-
     return c.json({ expenses });
-  })
-  .post("/", createExpenseValidator, async (c) => {
+});
+expensesRoutes.post("/", createExpenseValidator, async (c) => {
     const expense = c.req.valid("json");
     const user = c.get("user");
-
     const validatedExpense = insertExpensesSchema.parse({
-      ...expense,
-      userId: user.id,
+        ...expense,
+        userId: user.id,
     });
-
     const result = await db
-      .insert(expenseTable)
-      .values(validatedExpense)
-      .returning()
-      .then((res) => res[0]);
-
+        .insert(expenseTable)
+        .values(validatedExpense)
+        .returning()
+        .then((res) => res[0]);
     c.status(201);
     return c.json(result);
-  });
-
+});
+//
 // expensesRoutes.get("/total-spent", getUser, async (c) => {
 //   const user = c.var.user;
 //
@@ -100,16 +91,14 @@ export const expensesRoutes = new Hono<AuthType>()
 //
 //   return c.json({ expense });
 // });
-
-const createExpense = (id: number, title: string, amount: string) => ({
-  id,
-  title,
-  amount,
+const createExpense = (id, title, amount) => ({
+    id,
+    title,
+    amount,
 });
-
 // @ts-ignore
 const fakeExpenses = [
-  createExpense(1, "Groceries", "50"),
-  createExpense(2, "Utilities", "100"),
-  createExpense(3, "Rent", "1200"),
+    createExpense(1, "Groceries", "50"),
+    createExpense(2, "Utilities", "100"),
+    createExpense(3, "Rent", "1200"),
 ];

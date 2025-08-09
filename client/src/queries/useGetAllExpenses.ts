@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 import { minutesToMilliseconds } from "@/helpers/times";
+import { getExpenses } from "@/lib/api";
 
 const options = {
   getQueryKey: () => ["get-all-expenses"],
@@ -10,14 +10,7 @@ const options = {
 export function getAllExpensesQueryOptions() {
   return queryOptions({
     queryKey: [...options.getQueryKey()],
-    queryFn: async () => {
-      const res = await api.expenses.$get();
-      if (!res.ok) {
-        throw new Error("server error");
-      }
-
-      return await res.json();
-    },
+    queryFn: getExpenses,
     enabled: options.enabled,
     staleTime: minutesToMilliseconds(5), // Cache for 5 minutes
   });
