@@ -6,7 +6,7 @@ import { eq, desc } from "drizzle-orm";
 import type { AuthType } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import type { SuccessResponse } from "@/sharedTypes";
+import type { SuccessResponse } from "@/shared/types";
 
 export const expensesRoutes = new Hono<AuthType>()
   .use(authMiddleware)

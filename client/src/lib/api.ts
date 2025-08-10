@@ -1,5 +1,5 @@
 import { hc } from "hono/client";
-import type { ErrorResponse, ApiRoutes } from "@/server/sharedTypes";
+import type { ErrorResponse, ApiRoutes } from "@/shared/types";
 
 const client = hc<ApiRoutes>("", {
   fetch: (input: RequestInfo | URL, init?: RequestInit) => {
@@ -22,31 +22,14 @@ export const getExpenses = async () => {
   return data;
 };
 
-export const expenseSubmit = async (
-  title: string,
-  amount: string,
-  content: string
-) => {
+export const expenseSubmit = async (title: string, amount: string, content: string) => {
   try {
-    const res = await client.expenses.$post({
-      form: {
-        title, amount, content
-      }
-    });
+    const res = await client.expenses.$post({ form: { title, amount, content } });
 
-    if (res.ok) {
-      const data = await res.json();
-      return data;
-    }
-
-    const data = (await res.json()) as unknown as ErrorResponse;
-    return data;
+    const data = await res.json();
+    return res.ok ? data : (data as ErrorResponse);
   } catch (error) {
-    return {
-      success: false,
-      error: String(error),
-      isFormError: false,
-    } as ErrorResponse;
+    return { success: false, error: String(error), isFormError: false } as ErrorResponse;
   }
 };
 

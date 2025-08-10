@@ -25,7 +25,8 @@
     "noPropertyAccessFromIndexSignature": true,
 
     "paths": {
-      "@/*": ["./server/*"]
+      "@/*": ["./server/*"],
+      "@/shared/*": ["./shared/*"]
     },
     "exclude": [
       "node_modules"

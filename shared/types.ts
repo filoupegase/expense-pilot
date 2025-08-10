@@ -1,6 +1,6 @@
 import { z } from "zod";
-import * as shema from "./schema";
-import app from "./app";
+import * as shema from "../server/schema";
+import app from "../server/app";
 
 export type ApiRoutes = typeof app;
 
