@@ -1,32 +1,49 @@
 import { Hono } from "hono";
 import { db } from "../../db/db";
 import { expenses as expenseTable } from "../../db/schema";
+import { HTTPException } from "hono/http-exception";
 //import { insertExpensesSchema } from "../schema";
 import { eq, desc, and } from "drizzle-orm";
 import type { AuthType } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { loggedInMiddleware } from "../middlewares/loggedInMiddleware.ts";
 import type { Expense, SuccessResponse } from "@/shared/types";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 
 export const expensesRoutes = new Hono<AuthType>()
-  .use(authMiddleware)
   .get("/", async (c) => {
-    const user = c.get("user");
+    //const user = c.get("user");
 
     const expensesQuery = db
-      .select()
+      .select({
+        id: expenseTable.id,
+        title: expenseTable.title,
+        amount: expenseTable.amount,
+      })
       .from(expenseTable)
-      .where(eq(expenseTable.userId, user.id))
+      // .where(eq(expenseTable.userId, user.id)) // Uncomment this line when user context is available
       .orderBy(desc(expenseTable.createdAt))
       .limit(100);
 
     const expenses = await expensesQuery;
 
-    return c.json({ expenses });
+    return c.json<SuccessResponse<Expense[]>>(
+      {
+        data: expenses as Expense[],
+        success: true,
+        message: "Expense fetched successfully",
+      },
+      200,
+    );
   })
-  .post("/", createExpenseValidator, async (c) => {
+  .post("/", loggedInMiddleware, createExpenseValidator(), async (c) => {
     const { amount, title, content } = c.req.valid("form");
     const user = c.get("user");
+
+    if (!user) {
+      throw new HTTPException(401, { message: "Unauthorized" });
+    }
 
     const [expense] = await db
       .insert(expenseTable)
@@ -49,28 +66,36 @@ export const expensesRoutes = new Hono<AuthType>()
       201,
     );
   })
-  .delete("/:id{[0-9]+}", async (c) => {
-    const id = Number.parseInt(c.req.param("id"));
-    const user = c.get("user");
+  .delete(
+    "/:id",
+    loggedInMiddleware,
+    zValidator("param", z.object({ id: z.coerce.number() })),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const user = c.get("user");
 
-    const [expense] = await db
-      .delete(expenseTable)
-      .where(and(eq(expenseTable.userId, user.id), eq(expenseTable.id, id)))
-      .returning();
+      if (!user) {
+        throw new HTTPException(401, { message: "Unauthorized" });
+      }
 
-    if (!expense) {
-      return c.notFound();
-    }
+      const [expense] = await db
+        .delete(expenseTable)
+        .where(and(eq(expenseTable.userId, user.id), eq(expenseTable.id, id)))
+        .returning();
 
-    return c.json<SuccessResponse<Expense>>(
-      {
-        data: expense,
-        success: true,
-        message: "Expense created",
-      },
-      201,
-    );
-  });
+      if (!expense) {
+        return c.notFound();
+      }
+
+      return c.json<SuccessResponse<Expense>>(
+        {
+          data: expense as Expense,
+          success: true,
+          message: "Expense as been deleted with success",
+        },
+        200,
+      );
+    });
 
 // expensesRoutes.get("/total-spent", getUser, async (c) => {
 //   const user = c.var.user;

@@ -1,17 +1,19 @@
 import { zValidator } from "@hono/zod-validator";
-import { createExpenseSchema } from "../sharedTypes";
+import { createExpenseSchema } from "@/shared/types";
 
-export const createExpenseValidator = zValidator(
-  "form",
-  createExpenseSchema,
-  (result, c) => {
-    if (!result.success) {
-      return c.json(
-        {
-          errors: result.error.issues.map((issue) => issue.message),
-        },
-        400
-      );
+export function createExpenseValidator() {
+  return zValidator(
+    "form",
+    createExpenseSchema,
+    (result, c) => {
+      if (!result.success) {
+        return c.json(
+          {
+            errors: result.error.issues.map((issue) => issue.message),
+          },
+          400
+        );
+      }
     }
-  }
-);
+  );
+}

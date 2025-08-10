@@ -1,15 +1,14 @@
 import { createMiddleware } from "hono/factory";
-import { auth } from "../lib/auth";
+import { HTTPException } from "hono/http-exception";
+
 import type { AuthType } from "../lib/create-app";
 
-export const authMiddleware = createMiddleware<AuthType>(async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+export const loggedInMiddleware = createMiddleware<AuthType>(async (c, next) => {
+  const user = c.get("user");
 
-  if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+  if (!user) {
+    throw new HTTPException(401, { message: "Unauthorized" });
   }
 
-  c.set("user", session.user);
-  c.set("session", session.session);
-  return next();
+  await next();
 });

@@ -30,7 +30,7 @@ function Index() {
       const res = await expenseSubmit(value.title, value.amount, value.content);
       if (res.success) {
         await queryClient.invalidateQueries({ queryKey: ["get-all-expenses"] });
-        router.invalidate();
+        await router.invalidate();
         await navigate({ to: "/expenses", search: { id: res.data.expenseId } });
         return;
       } else {
@@ -38,7 +38,7 @@ function Index() {
           toast.error("Failed to create expense", { description: res.error });
         }
         form.setErrorMap({
-          onSubmit: res.isFormError ? res.error : "Unexpeted error",
+          onSubmit: res.isFormError ? res.error : { message: "Unexpected error" },
         });
       }
     },
@@ -112,26 +112,13 @@ function Index() {
         {/*  />*/}
         {/*</div>*/}
 
-        // todo : use this ::
-        {/*<form.Subscribe*/}
-        {/*  selector={(state) => [state.errorMap]}*/}
-        {/*  children={([errorMap]) =>*/}
-        {/*    errorMap.onSubmit ? (*/}
-        {/*      <p className="text-[0.8rem] font-medium text-destructive">*/}
-        {/*        {errorMap.onSubmit.toString()}*/}
-        {/*      </p>*/}
-        {/*    ) : null*/}
-        {/*  }*/}
-        {/*/>*/}
         <form.Subscribe
           selector={(state) => [state.errorMap]}
           children={([errorMap]) =>
             errorMap.onSubmit ? (
-              <div>
-                <em>
-                  There was an error on the form: {errorMap.onSubmit.toString()}
-                </em>
-              </div>
+              <p className="text-[0.8rem] font-medium text-destructive">
+                {errorMap.onSubmit.toString()}
+              </p>
             ) : null
           }
         />

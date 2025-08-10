@@ -28,6 +28,8 @@ const Component = () => {
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context }) => {
+    // todo :use this here
+    // client/src/lib/auth-client.ts
     const queryClient = context.queryClient;
 
     try {

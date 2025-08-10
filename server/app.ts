@@ -16,36 +16,49 @@ const app = new Hono<AuthType>()
       exposeHeaders: ["Content-Length"],
       maxAge: 600,
       credentials: true,
-    })
-  )
-  .on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw))
-  .route("/api/expenses", expensesRoutes);
+    }),
+  );
+
+app.use("*", async (c, next) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+  if (!session) {
+    c.set("user", null);
+    c.set("session", null);
+    return next();
+  }
+
+  c.set("user", session.user);
+  c.set("session", session.session);
+  return next();
+});
+
+const routes = app
+  .basePath("/api")
+  .on(["POST", "GET"], "/auth/*", (c) => {
+    return auth.handler(c.req.raw);
+  })
+  .get("/session", (c) => {
+    const session = c.get("session");
+    const user = c.get("user");
+
+    if (!user) return c.body(null, 401);
+
+    return c.json({
+      session,
+      user
+    });
+  })
+  .route("/expenses", expensesRoutes);
 
 
 showRoutes(app, {
   verbose: true,
 });
 
-// app.on(["POST", "GET"], "/auth/*", (c) => {
-//   return auth.handler(c.req.raw);
-// });
-//
-// app.get("/session", (c) => {
-//   const session = c.get("session");
-//   const user = c.get("user");
-//
-//   if (!user) return c.body(null, 401);
-//
-//   return c.json({
-//     session,
-//     user
-//   });
-// });
-//
-// app.route("/expenses", expensesRoutes);
-
 
 app.use("*", serveStatic({ root: "./client/dist" }));
 app.get("*", serveStatic({ path: "./client/dist/index.html" }));
 
 export default app;
+export type ApiRoutes = typeof routes;

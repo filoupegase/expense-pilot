@@ -24,12 +24,25 @@ export const getExpenses = async () => {
 
 export const expenseSubmit = async (title: string, amount: string, content: string) => {
   try {
-    const res = await client.expenses.$post({ form: { title, amount, content } });
+    const res = await client.expenses.$post({
+      form: {
+        title,
+        amount,
+        content,
+      },
+    });
 
-    const data = await res.json();
-    return res.ok ? data : (data as ErrorResponse);
-  } catch (error) {
-    return { success: false, error: String(error), isFormError: false } as ErrorResponse;
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+
+    const data = (await res.json()) as unknown as ErrorResponse;
+    return data;
+  } catch (e) {
+    return {
+      success: false, error: String(e), isFormError: false,
+    } as ErrorResponse;
   }
 };
 
@@ -47,11 +60,14 @@ export async function getCurrentUser() {
 export async function deleteExpense({ id }: { id: number }) {
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  const res = await client.expenses[":id{[0-9]+}"].$delete({
+  const res = await client.expenses[":id"].$delete({
     param: { id: id.toString() },
   });
 
-  if (!res.ok) {
-    throw new Error("server error");
+  if (res.ok) {
+    const data = await res.json();
+    return data;
   }
+  const data = (await res.json()) as unknown as ErrorResponse;
+  throw new Error(data.error);
 }
