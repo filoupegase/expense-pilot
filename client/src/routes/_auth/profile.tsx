@@ -4,7 +4,7 @@ import { useGetCurrentUser } from "@/queries/useGetCurrentUser";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/_auth/profile")({
   component: Index,
 });
 

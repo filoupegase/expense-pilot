@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { useGetExpenseTotalSpent } from "@/queries/useGetExpenseTotalSpent";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/_auth/")({
   component: Index,
 });
 

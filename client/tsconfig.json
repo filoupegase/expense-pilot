@@ -6,10 +6,11 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@/server/*": ["../server/*"],
-    }
+    },
   }
 }

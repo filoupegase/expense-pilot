@@ -8,7 +8,11 @@ export default function SubscribeButton({ label = "Submit" }: { label?: string }
     <form.Subscribe
       selector={(state) => [state.canSubmit, state.isSubmitting]}
       children={([canSubmit, isSubmitting]) => (
-        <Button className="mt-4" type="submit" disabled={!canSubmit}>
+        <Button
+          className="mt-4"
+          type="submit"
+          disabled={!canSubmit}
+        >
           {isSubmitting ? "..." : label}
         </Button>
       )}

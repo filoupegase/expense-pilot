@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import { client } from "@/lib/api";
+//import { client } from "@/lib/api";
 import { minutesToMilliseconds } from "@/helpers/times";
 
 const options = {

@@ -13,7 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/Skeleton";
 import ExpenseDeleteButton from "@/components/business/expense-delete-button";
 
-export const Route = createFileRoute("/_authenticated/expenses")({
+export const Route = createFileRoute("/_auth/expenses")({
   component: Index,
 });
 

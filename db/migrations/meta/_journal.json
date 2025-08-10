@@ -8,6 +8,27 @@
       "when": 1754669032404,
       "tag": "0000_foamy_venom",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1754842937594,
+      "tag": "0001_sweet_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754845147426,
+      "tag": "0002_real_black_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1754845326735,
+      "tag": "0003_ordinary_quasar",
+      "breakpoints": true
     }
   ]
 }

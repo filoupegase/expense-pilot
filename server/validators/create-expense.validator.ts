@@ -2,7 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { createExpenseSchema } from "../sharedTypes";
 
 export const createExpenseValidator = zValidator(
-  "json",
+  "form",
   createExpenseSchema,
   (result, c) => {
     if (!result.success) {

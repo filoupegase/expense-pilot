@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
-import { Route as AuthenticatedCreate_expenseRouteImport } from './routes/_authenticated/create_expense'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
+import { Route as AuthExpensesRouteImport } from './routes/_auth/expenses'
+import { Route as AuthCreate_expenseRouteImport } from './routes/_auth/create_expense'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -25,50 +25,49 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/_auth/',
   path: '/',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
+const AuthProfileRoute = AuthProfileRouteImport.update({
+  id: '/_auth/profile',
   path: '/profile',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
-  id: '/expenses',
+const AuthExpensesRoute = AuthExpensesRouteImport.update({
+  id: '/_auth/expenses',
   path: '/expenses',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedCreate_expenseRoute =
-  AuthenticatedCreate_expenseRouteImport.update({
-    id: '/create_expense',
-    path: '/create_expense',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
+const AuthCreate_expenseRoute = AuthCreate_expenseRouteImport.update({
+  id: '/_auth/create_expense',
+  path: '/create_expense',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
-  '/create_expense': typeof AuthenticatedCreate_expenseRoute
-  '/expenses': typeof AuthenticatedExpensesRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/': typeof AuthenticatedIndexRoute
+  '/create_expense': typeof AuthCreate_expenseRoute
+  '/expenses': typeof AuthExpensesRoute
+  '/profile': typeof AuthProfileRoute
+  '/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
-  '/create_expense': typeof AuthenticatedCreate_expenseRoute
-  '/expenses': typeof AuthenticatedExpensesRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/': typeof AuthenticatedIndexRoute
+  '/create_expense': typeof AuthCreate_expenseRoute
+  '/expenses': typeof AuthExpensesRoute
+  '/profile': typeof AuthProfileRoute
+  '/': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRoute
   '/about': typeof AboutRoute
-  '/_authenticated/create_expense': typeof AuthenticatedCreate_expenseRoute
-  '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_auth/create_expense': typeof AuthCreate_expenseRoute
+  '/_auth/expenses': typeof AuthExpensesRoute
+  '/_auth/profile': typeof AuthProfileRoute
+  '/_auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,15 +78,19 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/about'
-    | '/_authenticated/create_expense'
-    | '/_authenticated/expenses'
-    | '/_authenticated/profile'
-    | '/_authenticated/'
+    | '/_auth/create_expense'
+    | '/_auth/expenses'
+    | '/_auth/profile'
+    | '/_auth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRoute
   AboutRoute: typeof AboutRoute
+  AuthCreate_expenseRoute: typeof AuthCreate_expenseRoute
+  AuthExpensesRoute: typeof AuthExpensesRoute
+  AuthProfileRoute: typeof AuthProfileRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -106,58 +109,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/': {
-      id: '/_authenticated/'
+    '/_auth/': {
+      id: '/_auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
+    '/_auth/profile': {
+      id: '/_auth/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof AuthProfileRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/expenses': {
-      id: '/_authenticated/expenses'
+    '/_auth/expenses': {
+      id: '/_auth/expenses'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof AuthenticatedExpensesRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof AuthExpensesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/create_expense': {
-      id: '/_authenticated/create_expense'
+    '/_auth/create_expense': {
+      id: '/_auth/create_expense'
       path: '/create_expense'
       fullPath: '/create_expense'
-      preLoaderRoute: typeof AuthenticatedCreate_expenseRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof AuthCreate_expenseRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AuthenticatedRouteChildren {
-  AuthenticatedCreate_expenseRoute: typeof AuthenticatedCreate_expenseRoute
-  AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-}
-
-const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedCreate_expenseRoute: AuthenticatedCreate_expenseRoute,
-  AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-}
-
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRoute,
   AboutRoute: AboutRoute,
+  AuthCreate_expenseRoute: AuthCreate_expenseRoute,
+  AuthExpensesRoute: AuthExpensesRoute,
+  AuthProfileRoute: AuthProfileRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,11 +1,12 @@
 import { Hono } from "hono";
 import { db } from "../../db/db";
 import { expenses as expenseTable } from "../../db/schema";
-import { insertExpensesSchema } from "../schema";
+//import { insertExpensesSchema } from "../schema";
 import { eq, desc } from "drizzle-orm";
 import type { AuthType } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import type { SuccessResponse } from "@/sharedTypes";
 
 export const expensesRoutes = new Hono<AuthType>()
   .use(authMiddleware)
@@ -24,22 +25,29 @@ export const expensesRoutes = new Hono<AuthType>()
     return c.json({ expenses });
   })
   .post("/", createExpenseValidator, async (c) => {
-    const expense = c.req.valid("json");
+    const { amount, title, content } = c.req.valid("form");
     const user = c.get("user");
 
-    const validatedExpense = insertExpensesSchema.parse({
-      ...expense,
-      userId: user.id,
-    });
-
-    const result = await db
+    const [expense] = await db
       .insert(expenseTable)
-      .values(validatedExpense)
-      .returning()
-      .then((res) => res[0]);
+      .values({
+        title,
+        amount,
+        content,
+        userId: user.id,
+      })
+      .returning({
+        id: expenseTable.id,
+      });
 
-    c.status(201);
-    return c.json(result);
+    return c.json<SuccessResponse<{ expenseId: number }>>(
+      {
+        success: true,
+        message: "Expense created",
+        data: { expenseId: expense.id },
+      },
+      201,
+    );
   });
 
 // expensesRoutes.get("/total-spent", getUser, async (c) => {

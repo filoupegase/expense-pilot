@@ -1,5 +1,5 @@
 import { hc } from "hono/client";
-import type { CreateExpense, ErrorResponse, ApiRoutes } from "@/server/sharedTypes";
+import type { ErrorResponse, ApiRoutes } from "@/server/sharedTypes";
 
 const client = hc<ApiRoutes>("", {
   fetch: (input: RequestInfo | URL, init?: RequestInit) => {
@@ -8,10 +8,10 @@ const client = hc<ApiRoutes>("", {
       credentials: "include"
     });
   }
-});
+}).api;
 
 export const getExpenses = async () => {
-  const res = await client.api.expenses.$get();
+  const res = await client.expenses.$get();
 
   if (!res.ok) {
     const data = (await res.json()) as unknown as ErrorResponse;
@@ -22,16 +22,33 @@ export const getExpenses = async () => {
   return data;
 };
 
-export async function createExpense({ value }: { value: CreateExpense }) {
-  const res = await client.api.expenses.$post({ json: value });
+export const expenseSubmit = async (
+  title: string,
+  amount: string,
+  content: string
+) => {
+  try {
+    const res = await client.expenses.$post({
+      form: {
+        title, amount, content
+      }
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to create expense");
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+
+    const data = (await res.json()) as unknown as ErrorResponse;
+    return data;
+  } catch (error) {
+    return {
+      success: false,
+      error: String(error),
+      isFormError: false,
+    } as ErrorResponse;
   }
-
-  const newExpense = await res.json();
-  return newExpense;
-}
+};
 
 export async function getCurrentUser() {
   const res = await client.me.$get();

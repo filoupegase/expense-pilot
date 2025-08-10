@@ -26,6 +26,9 @@
 
     "paths": {
       "@/*": ["./server/*"]
-    }
+    },
+    "exclude": [
+      "node_modules"
+    ]
   }
 }

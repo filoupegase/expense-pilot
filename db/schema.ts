@@ -10,18 +10,17 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-export const expenses = pgTable(
-  "expenses",
-  {
+export const expenses = pgTable("expenses", {
     id: serial("id").primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    userId:
+      text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
     title: varchar({ length: 500 }).notNull(),
-    amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
-    date: date("date").notNull(),
-    createdAt: timestamp({ withTimezone: true }).defaultNow(),
-    updatedAt: timestamp({ withTimezone: true }).defaultNow(),
+    content: text("content"),
+    amount: numeric("amount", { precision: 12, scale: 2 }),
+    createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
   },
   (expenses) => [
     index("email_idx").on(expenses.userId)

@@ -2,7 +2,7 @@ import { createRootRouteWithContext, Link, Outlet } from "@tanstack/react-router
 import { Toaster } from "@/components/ui/Sonner";
 import { type QueryClient } from "@tanstack/react-query";
 
-//import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -48,7 +48,7 @@ function Root() {
         <Outlet />
       </div>
       <Toaster />
-      {/*<TanStackRouterDevtools />*/}
+      <TanStackRouterDevtools />
     </>
   );
 }
