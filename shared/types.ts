@@ -1,8 +1,7 @@
 import { z } from "zod";
 import * as shema from "../server/schema";
-import app from "../server/app";
 
-export type ApiRoutes = typeof app;
+export type { ApiRoutes } from "../server/app";
 
 export type SuccessResponse<T = void> = {
   success: true;
