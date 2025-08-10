@@ -1,4 +1,4 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { expenses } from "../db/schema";
 
@@ -16,5 +16,3 @@ export const insertExpensesSchema = createInsertSchema(expenses, {
     .optional(),
   content: z.string().optional(),
 });
-
-export const ExpensesSchema = createSelectSchema(expenses);

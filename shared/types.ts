@@ -27,3 +27,13 @@ export const createExpenseSchema = shema.insertExpensesSchema
   });
 
 export type CreateExpense = z.infer<typeof createExpenseSchema>;
+
+export type Expense = {
+  id: number;
+  userId: string;
+  title: string;
+  amount: string | null;
+  content: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};

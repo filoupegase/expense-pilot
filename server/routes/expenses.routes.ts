@@ -2,11 +2,11 @@ import { Hono } from "hono";
 import { db } from "../../db/db";
 import { expenses as expenseTable } from "../../db/schema";
 //import { insertExpensesSchema } from "../schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import type { AuthType } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import type { SuccessResponse } from "@/shared/types";
+import type { Expense, SuccessResponse } from "@/shared/types";
 
 export const expensesRoutes = new Hono<AuthType>()
   .use(authMiddleware)
@@ -42,9 +42,31 @@ export const expensesRoutes = new Hono<AuthType>()
 
     return c.json<SuccessResponse<{ expenseId: number }>>(
       {
+        data: { expenseId: expense.id },
         success: true,
         message: "Expense created",
-        data: { expenseId: expense.id },
+      },
+      201,
+    );
+  })
+  .delete("/:id{[0-9]+}", async (c) => {
+    const id = Number.parseInt(c.req.param("id"));
+    const user = c.get("user");
+
+    const [expense] = await db
+      .delete(expenseTable)
+      .where(and(eq(expenseTable.userId, user.id), eq(expenseTable.id, id)))
+      .returning();
+
+    if (!expense) {
+      return c.notFound();
+    }
+
+    return c.json<SuccessResponse<Expense>>(
+      {
+        data: expense,
+        success: true,
+        message: "Expense created",
       },
       201,
     );
@@ -82,29 +104,6 @@ export const expensesRoutes = new Hono<AuthType>()
 //   }
 //
 //   // const expense = fakeExpenses.find(x => x.id === id);
-//
-//   return c.json({ expense });
-// });
-//
-// expensesRoutes.delete("/:id{[0-9]+}", getUser, async (c) => {
-//   const id = Number.parseInt(c.req.param("id"));
-//   const user = c.var.user;
-//
-//   const expense = await db
-//     .delete(expenseTable)
-//     .where(and(eq(expenseTable.userId, user.id), eq(expenseTable.id, id)))
-//     .returning()
-//     .then((res) => res[0]);
-//
-//   if (!expense) {
-//     return c.notFound();
-//   }
-//
-//   //const index = fakeExpenses.findIndex(expense => expense.id === id);
-//   // if (index === -1) {
-//   //   return c.notFound();
-//   // }
-//   //const deletedExpense = fakeExpenses.splice(index, 1)[0];}
 //
 //   return c.json({ expense });
 // });
