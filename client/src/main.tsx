@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   QueryClient,
   QueryClientProvider,
@@ -28,7 +27,6 @@ if (!rootElement.innerHTML) {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </React.StrictMode>,
   );
