@@ -1,5 +1,7 @@
 import { createRootRouteWithContext, Link, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/Sonner";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import React from "react";
 import { type QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
@@ -9,6 +11,18 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => <Root />
 });
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null // Render nothing in production
+    : React.lazy(() =>
+      // Lazy load in development
+      import("@tanstack/router-devtools").then((res) => ({
+        default: res.TanStackRouterDevtools,
+        // For Embedded Mode
+        // default: res.TanStackRouterDevtoolsPanel
+      })),
+    );
 
 function NavBar() {
   return (
@@ -46,6 +60,8 @@ function Root() {
         <Outlet />
       </div>
       <Toaster />
+      <ReactQueryDevtools />
+      <TanStackRouterDevtools position="bottom-left" />
     </>
   );
 }

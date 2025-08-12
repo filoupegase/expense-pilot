@@ -9,45 +9,52 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthExpensesRouteImport } from './routes/_auth/expenses'
 import { Route as AuthCreate_expenseRouteImport } from './routes/_auth/create_expense'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/_auth/',
+  id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthProfileRoute = AuthProfileRouteImport.update({
-  id: '/_auth/profile',
+  id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthExpensesRoute = AuthExpensesRouteImport.update({
-  id: '/_auth/expenses',
+  id: '/expenses',
   path: '/expenses',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthCreate_expenseRoute = AuthCreate_expenseRouteImport.update({
-  id: '/_auth/create_expense',
+  id: '/create_expense',
   path: '/create_expense',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/create_expense': typeof AuthCreate_expenseRoute
   '/expenses': typeof AuthExpensesRoute
   '/profile': typeof AuthProfileRoute
@@ -55,6 +62,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/create_expense': typeof AuthCreate_expenseRoute
   '/expenses': typeof AuthExpensesRoute
   '/profile': typeof AuthProfileRoute
@@ -62,8 +70,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/_auth/create_expense': typeof AuthCreate_expenseRoute
   '/_auth/expenses': typeof AuthExpensesRoute
   '/_auth/profile': typeof AuthProfileRoute
@@ -71,13 +80,20 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/create_expense' | '/expenses' | '/profile' | '/'
+  fullPaths:
+    | '/about'
+    | '/login'
+    | '/create_expense'
+    | '/expenses'
+    | '/profile'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/create_expense' | '/expenses' | '/profile' | '/'
+  to: '/about' | '/login' | '/create_expense' | '/expenses' | '/profile' | '/'
   id:
     | '__root__'
-    | '/_authenticated'
+    | '/_auth'
     | '/about'
+    | '/login'
     | '/_auth/create_expense'
     | '/_auth/expenses'
     | '/_auth/profile'
@@ -85,16 +101,20 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRoute
+  AuthRoute: typeof AuthRouteWithChildren
   AboutRoute: typeof AboutRoute
-  AuthCreate_expenseRoute: typeof AuthCreate_expenseRoute
-  AuthExpensesRoute: typeof AuthExpensesRoute
-  AuthProfileRoute: typeof AuthProfileRoute
-  AuthIndexRoute: typeof AuthIndexRoute
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -102,11 +122,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_auth': {
+      id: '/_auth'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/': {
@@ -114,39 +134,52 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/profile': {
       id: '/_auth/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof AuthProfileRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/expenses': {
       id: '/_auth/expenses'
       path: '/expenses'
       fullPath: '/expenses'
       preLoaderRoute: typeof AuthExpensesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/create_expense': {
       id: '/_auth/create_expense'
       path: '/create_expense'
       fullPath: '/create_expense'
       preLoaderRoute: typeof AuthCreate_expenseRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRoute: AuthenticatedRoute,
-  AboutRoute: AboutRoute,
+interface AuthRouteChildren {
+  AuthCreate_expenseRoute: typeof AuthCreate_expenseRoute
+  AuthExpensesRoute: typeof AuthExpensesRoute
+  AuthProfileRoute: typeof AuthProfileRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
   AuthCreate_expenseRoute: AuthCreate_expenseRoute,
   AuthExpensesRoute: AuthExpensesRoute,
   AuthProfileRoute: AuthProfileRoute,
   AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthRoute: AuthRouteWithChildren,
+  AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
