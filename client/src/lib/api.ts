@@ -49,12 +49,11 @@ export const expenseSubmit = async (title: string, amount: string, content: stri
 export async function getCurrentUser() {
   const res = await client.me.$get();
 
-  if (!res.ok) {
-    throw new Error("server error");
+  if (res.ok) {
+    const data = await res.json();
+    return data.data;
   }
-
-  const data = await res.json();
-  return data;
+  return null;
 }
 
 export async function deleteExpense({ id }: { id: number }) {

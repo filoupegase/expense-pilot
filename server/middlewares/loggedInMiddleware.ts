@@ -1,9 +1,9 @@
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 
-import type { AuthType } from "../lib/create-app";
+import type { AuthContext } from "../lib/create-app";
 
-export const loggedInMiddleware = createMiddleware<AuthType>(async (c, next) => {
+export const loggedInMiddleware = createMiddleware<AuthContext>(async (c, next) => {
   const user = c.get("user");
 
   if (!user) {

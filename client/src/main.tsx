@@ -11,7 +11,12 @@ import { routeTree } from "./routeTree.gen";
 const queryClient = new QueryClient();
 
 // Create a new router instance
-const router = createRouter({ routeTree, context: { queryClient } });
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+  defaultPreloadStaleTime: 0,
+  context: { queryClient },
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -21,6 +26,7 @@ declare module "@tanstack/react-router" {
 }
 
 const rootElement = document.getElementById("root")!;
+
 if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);
   root.render(

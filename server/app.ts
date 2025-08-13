@@ -2,11 +2,12 @@ import { Hono } from "hono";
 import { auth } from "./lib/auth";
 import { serveStatic } from "hono/bun";
 import { expensesRoutes } from "./routes/expenses.routes";
+import { authRoutes } from "./routes/_auth.routes";
 import { showRoutes } from "hono/dev";
-import type { AuthType } from "./lib/create-app";
+import type { AuthContext } from "./lib/create-app";
 import { cors } from "hono/cors";
 
-const app = new Hono<AuthType>()
+const app = new Hono<AuthContext>()
   .use(
     "/api/auth/*", // or replace with "*" to enable cors for all routes
     cors({
@@ -49,7 +50,8 @@ const routes = app
       user
     });
   })
-  .route("/expenses", expensesRoutes);
+  .route("/expenses", expensesRoutes)
+  .route("/", authRoutes);
 
 
 showRoutes(app, {

@@ -4,14 +4,14 @@ import { expenses as expenseTable } from "../../db/schema";
 import { HTTPException } from "hono/http-exception";
 //import { insertExpensesSchema } from "../schema";
 import { eq, desc, and } from "drizzle-orm";
-import type { AuthType } from "../lib/create-app";
+import type { AuthContext } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { loggedInMiddleware } from "../middlewares/loggedInMiddleware.ts";
 import type { Expense, SuccessResponse } from "@/shared/types";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
-export const expensesRoutes = new Hono<AuthType>()
+export const expensesRoutes = new Hono<AuthContext>()
   .get("/", async (c) => {
     //const user = c.get("user");
 
