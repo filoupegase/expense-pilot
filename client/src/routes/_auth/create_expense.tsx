@@ -24,22 +24,27 @@ function Index() {
   const form = useAppForm({
     ...formOpts,
     validators: {
-      onChange: createExpenseSchema.parse,
+      onChange: createExpenseSchema,
     },
     onSubmit: async ({ value }) => {
       const res = await expenseSubmit(value.title, value.amount, value.content);
       if (res.success) {
-        await queryClient.invalidateQueries({ queryKey: ["get-all-expenses"] });
+        await queryClient.invalidateQueries({ queryKey: ["expenses"] });
         await router.invalidate();
         await navigate({ to: "/expenses", search: { id: res.data.expenseId } });
+
+        // success state
+        toast("Expense Created", {
+          description: `Successfully created new expense: ${res.data.expenseId}`,
+        });
         return;
       } else {
         if (!res.isFormError) {
           toast.error("Failed to create expense", { description: res.error });
         }
-        form.setErrorMap({
-          onSubmit: res.isFormError ? res.error : { message: "Unexpected error" },
-        });
+        // form.setErrorMap({
+        //   onSubmit: res.isFormError ? res.error : "Unexpected error",
+        // });
       }
     },
     // onSubmit: async ({ value }) => {
@@ -90,7 +95,7 @@ function Index() {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          void form.handleSubmit();
+          form.handleSubmit();
         }}
       >
         <form.AppField
@@ -117,7 +122,7 @@ function Index() {
           children={([errorMap]) =>
             errorMap.onSubmit ? (
               <p className="text-[0.8rem] font-medium text-destructive">
-                {errorMap.onSubmit.toString()}
+                <em>There was an error on the form: {errorMap.onSubmit}</em>
               </p>
             ) : null
           }

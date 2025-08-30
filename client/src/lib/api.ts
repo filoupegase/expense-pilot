@@ -41,7 +41,9 @@ export const expenseSubmit = async (title: string, amount: string, content: stri
     return data;
   } catch (e) {
     return {
-      success: false, error: String(e), isFormError: false,
+      success: false,
+      error: String(e),
+      isFormError: false,
     } as ErrorResponse;
   }
 };

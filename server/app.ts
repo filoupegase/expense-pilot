@@ -1,11 +1,15 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { HTTPException } from "hono/http-exception";
+
+import { type ErrorResponse } from "@/shared/types";
+
+import { type AuthContext } from "./lib/create-app";
 import { auth } from "./lib/auth";
-import { serveStatic } from "hono/bun";
 import { expensesRoutes } from "./routes/expenses.routes";
 import { authRoutes } from "./routes/_auth.routes";
 import { showRoutes } from "hono/dev";
-import type { AuthContext } from "./lib/create-app";
-import { cors } from "hono/cors";
+import { serveStatic } from "hono/bun";
 
 const app = new Hono<AuthContext>()
   .use(
@@ -52,6 +56,36 @@ const routes = app
   })
   .route("/expenses", expensesRoutes)
   .route("/", authRoutes);
+
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    const errResponse =
+      err.res ??
+      c.json<ErrorResponse>(
+        {
+          success: false,
+          error: err.message,
+          isFormError:
+            err.cause && typeof err.cause === "object" && "form" in err.cause
+              ? err.cause.form === true
+              : false,
+        },
+        err.status,
+      );
+    return errResponse;
+  }
+
+  return c.json<ErrorResponse>(
+    {
+      success: false,
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Interal Server Error"
+          : (err.stack ?? err.message),
+    },
+    500,
+  );
+});
 
 
 showRoutes(app, {
