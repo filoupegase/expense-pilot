@@ -1,5 +1,6 @@
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
@@ -7,6 +8,7 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 /** @type {import("vite").UserConfig} */
 export default ({
   plugins: [
+    devtools(),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,

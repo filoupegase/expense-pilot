@@ -1,6 +1,11 @@
 import { createRootRouteWithContext, Link, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/Sonner";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+// coming soon
+// import { ReactFormDevtoolsPanel } from "@tanstack/react-form";
+
 import React from "react";
 import { type QueryClient } from "@tanstack/react-query";
 
@@ -12,13 +17,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => <Root />
 });
 
-const TanStackRouterDevtools =
+const TanStackDevtools =
   process.env.NODE_ENV === "production"
     ? () => null // Render nothing in production
     : React.lazy(() =>
       // Lazy load in development
-      import("@tanstack/react-router-devtools").then((res) => ({
-        default: res.TanStackRouterDevtools,
+      import("@tanstack/react-devtools").then((res) => ({
+        default: res.TanStackDevtools,
+        // For Embedded Mode
+        // default: res.TanStackRouterDevtoolsPanel
       })),
     );
 
@@ -58,8 +65,26 @@ function Root() {
         <Outlet />
       </div>
       <Toaster />
-      <ReactQueryDevtools />
-      <TanStackRouterDevtools position="bottom-left" />
+
+      <TanStackDevtools
+        config={{
+          position: "bottom-left"
+        }}
+        plugins={[
+          {
+            name: "TanStack Query",
+            render: <ReactQueryDevtoolsPanel />,
+          },
+          {
+            name: "TanStack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+          // {
+          //   name: 'TanStack Form',
+          //   render: <ReactFormDevtoolsPanel />,
+          // },
+        ]}
+      />
     </>
   );
 }
