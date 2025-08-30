@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { AuthContext } from "../lib/create-app";
 import { loggedInMiddleware } from "@/middlewares/loggedInMiddleware.ts";
-import { type SuccessResponse, type User } from "@/shared/types";
+import type { SuccessResponse, User } from "@/shared/types";
 
 export const authRoutes = new Hono<AuthContext>()
   .use("*", loggedInMiddleware)

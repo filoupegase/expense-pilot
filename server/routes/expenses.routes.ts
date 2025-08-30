@@ -3,7 +3,7 @@ import { db } from "../../db/db";
 import { expenses as expenseTable } from "../../db/schema";
 import { HTTPException } from "hono/http-exception";
 //import { insertExpensesSchema } from "../schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sum } from "drizzle-orm";
 import type { AuthContext } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { loggedInMiddleware } from "../middlewares/loggedInMiddleware.ts";
@@ -66,6 +66,29 @@ export const expensesRoutes = new Hono<AuthContext>()
       201,
     );
   })
+  .get("/total-spent", loggedInMiddleware, async (c) => {
+    const user = c.get("user");
+
+    if (!user) {
+      throw new HTTPException(401, { message: "Unauthorized" });
+    }
+
+    const result = await db
+      .select({ total: sum(expenseTable.amount) })
+      .from(expenseTable)
+      .where(eq(expenseTable.userId, user.id))
+      .limit(1)
+      .then((res) => res[0]);
+
+    return c.json<SuccessResponse<{ total: string }>>(
+      {
+        data: { total: result.total || "0" },
+        success: true,
+        message: "Total amount fetched successfully",
+      },
+      200,
+    );
+  })
   .delete(
     "/:id",
     loggedInMiddleware,
@@ -97,23 +120,7 @@ export const expensesRoutes = new Hono<AuthContext>()
       );
     });
 
-// expensesRoutes.get("/total-spent", getUser, async (c) => {
-//   const user = c.var.user;
-//
-//   const result = await db
-//     .select({ total: sum(expenseTable.amount) })
-//     .from(expenseTable)
-//     .where(eq(expenseTable.userId, user.id))
-//     .limit(1)
-//     .then((res) => res[0]);
-//
-//   // const total = fakeExpenses.reduce(
-//   //   (sum, expense) =>
-//   //     sum + +expense.amount, 0
-//   // );
-//
-//   return c.json(result);
-// });
+
 // expensesRoutes.get("/:id{[0-9]+}", getUser, async (c) => {
 //   const id = Number.parseInt(c.req.param("id"));
 //   const user = c.var.user;
