@@ -7,7 +7,7 @@ import { eq, desc, and, sum } from "drizzle-orm";
 import type { AuthContext } from "../lib/create-app";
 import { createExpenseValidator } from "../validators/create-expense.validator";
 import { loggedInMiddleware } from "../middlewares/loggedInMiddleware.ts";
-import type { Expense, SuccessResponse } from "@/shared/types";
+import type { Expense, SuccessResponse, TotalExpenses } from "@/shared/types";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 

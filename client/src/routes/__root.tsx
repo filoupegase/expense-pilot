@@ -22,10 +22,8 @@ const TanStackDevtools =
     ? () => null // Render nothing in production
     : React.lazy(() =>
       // Lazy load in development
-      import("@tanstack/react-devtools").then((res) => ({
-        default: res.TanStackDevtools,
-        // For Embedded Mode
-        // default: res.TanStackRouterDevtoolsPanel
+      import("@tanstack/react-devtools").then((d) => ({
+        default: d.TanStackDevtools,
       })),
     );
 

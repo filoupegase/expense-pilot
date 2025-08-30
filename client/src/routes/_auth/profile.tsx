@@ -18,13 +18,13 @@ function Index() {
     <div className="p-2">
       <div className="flex items-center gap-2">
         <Avatar>
-          {data.user.picture && (
-            <AvatarImage src={data.user.picture} alt={data.user.given_name} />
+          {data.image && (
+            <AvatarImage src={data.image} alt={data.id} />
           )}
-          <AvatarFallback>{data.user.given_name}</AvatarFallback>
+          <AvatarFallback>{data.name}</AvatarFallback>
         </Avatar>
         <p>
-          {data.user.given_name} {data.user.family_name}
+          {data.name}
         </p>
       </div>
       <Button asChild className="my-4">

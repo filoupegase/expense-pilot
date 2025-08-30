@@ -46,3 +46,7 @@ export type User = {
   updatedAt: Date
   image?: string | null | undefined
 }
+
+export type TotalExpenses = {
+  total: string;
+};

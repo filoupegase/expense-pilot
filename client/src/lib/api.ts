@@ -48,6 +48,28 @@ export const expenseSubmit = async (title: string, amount: string, content: stri
   }
 };
 
+export const getTotalExpenses = async () => {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const res = await client.expenses["total-spent"].$get();
+
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+
+    const data = (await res.json()) as unknown as ErrorResponse;
+    return data;
+  } catch (e) {
+    return {
+      success: false,
+      error: String(e),
+      isFormError: false,
+    } as ErrorResponse;
+  }
+};
+
 export async function getCurrentUser() {
   const res = await client.me.$get();
 
